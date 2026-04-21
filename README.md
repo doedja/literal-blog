@@ -9,9 +9,9 @@ Minimal Astro blog with a built-in CMS at `/admin`, deployable to Cloudflare Pag
 
 ## Deploy
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR-USERNAME/literal-blog)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/doedja/literal-blog)
 
-Replace `YOUR-USERNAME` in the button URL with your GitHub username after forking.
+If you fork under a different username, update the button URL in this README to match.
 
 ### Setup
 
