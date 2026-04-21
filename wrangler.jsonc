@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "literal-blog",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-04-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+  "build": {
+    "command": "bun run build"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

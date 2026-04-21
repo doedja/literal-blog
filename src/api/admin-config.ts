@@ -3,9 +3,9 @@ interface Env {
   GITHUB_BRANCH?: string;
 }
 
-export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const repo = context.env.GITHUB_REPO;
-  const branch = context.env.GITHUB_BRANCH ?? 'main';
+export async function handleAdminConfig(request: Request, env: Env): Promise<Response> {
+  const repo = env.GITHUB_REPO;
+  const branch = env.GITHUB_BRANCH ?? 'main';
 
   if (!repo) {
     return new Response(JSON.stringify({ error: 'GITHUB_REPO env var not set' }), {
@@ -14,7 +14,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     });
   }
 
-  const origin = new URL(context.request.url).origin;
+  const origin = new URL(request.url).origin;
 
   const postFields = [
     { name: 'title', label: 'Title', widget: 'string' },
@@ -88,4 +88,4 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       'Cache-Control': 'private, no-store',
     },
   });
-};
+}
