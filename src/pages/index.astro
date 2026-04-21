@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { formatDate, getSlug, getCategory, getSortedPosts } from '../utils';
+import { siteConfig } from '../../site.config';
+
+const sortedPosts = await getSortedPosts();
+const totalPages = Math.ceil(sortedPosts.length / siteConfig.postsPerPage);
+const paginatedPosts = sortedPosts.slice(0, siteConfig.postsPerPage);
+---
+
+<Base>
+  <h1>Recent</h1>
+  <p class="tagline">{siteConfig.tagline}</p>
+  {paginatedPosts.length === 0 ? (
+    <p>No posts yet.</p>
+  ) : (
+    <ul class="post-list">
+      {paginatedPosts.map((post) => {
+        const category = getCategory(post.slug);
+        return (
+          <li>
+            <span class="post-title">
+              <a href={`/${getSlug(post.slug)}`}>{post.data.title}{post.data.updated && <span class="updated"> (Updated)</span>}</a>
+            </span>
+            <span class="post-meta">
+              <span class="cat">{category}</span>
+              <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  )}
+
+  {totalPages > 1 && (
+    <nav class="pagination">
+      <span class="pages">
+        <span class="current">1</span>
+        {totalPages > 1 && <a href="/page/2">2</a>}
+        {totalPages > 2 && <a href={`/page/${totalPages}`}>{totalPages}</a>}
+      </span>
+      <a href="/page/2" class="next">Next &rarr;</a>
+    </nav>
+  )}
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .tagline {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    margin-top: 0;
+  }
+
+  .post-title {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .cat {
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .updated {
+    font-size: 0.85em;
+    color: var(--muted);
+  }
+</style>

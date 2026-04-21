@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import { formatDate, getSlug, getCategory, getSortedPosts } from '../../utils';
+import { siteConfig } from '../../../site.config';
+
+export async function getStaticPaths() {
+  const posts = await getSortedPosts();
+  const totalPages = Math.ceil(posts.length / siteConfig.postsPerPage);
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+  }));
+}
+
+const { page } = Astro.params;
+const currentPage = parseInt(page);
+
+const sortedPosts = await getSortedPosts();
+const totalPages = Math.ceil(sortedPosts.length / siteConfig.postsPerPage);
+const start = (currentPage - 1) * siteConfig.postsPerPage;
+const paginatedPosts = sortedPosts.slice(start, start + siteConfig.postsPerPage);
+
+const prevPage = currentPage > 2 ? `/page/${currentPage - 1}` : '/';
+const nextPage = currentPage < totalPages ? `/page/${currentPage + 1}` : null;
+---
+
+<Base title={`Page ${currentPage}`}>
+  <h1>Recent</h1>
+  <ul class="post-list">
+    {paginatedPosts.map((post) => {
+      const category = getCategory(post.slug);
+      return (
+        <li>
+          <span class="post-title">
+            <a href={`/${getSlug(post.slug)}`}>{post.data.title}{post.data.updated && <span class="updated"> (Updated)</span>}</a>
+          </span>
+          <span class="post-meta">
+            <span class="cat">{category}</span>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          </span>
+        </li>
+      );
+    })}
+  </ul>
+
+  <nav class="pagination">
+    <a href={prevPage}>&larr; Prev</a>
+
+    <span class="pages">
+      {currentPage > 2 && <a href="/">1</a>}
+      {currentPage > 3 && <span>...</span>}
+      {currentPage > 1 && <a href={prevPage}>{currentPage - 1}</a>}
+      <span class="current">{currentPage}</span>
+      {nextPage && <a href={nextPage}>{currentPage + 1}</a>}
+      {currentPage < totalPages - 2 && <span>...</span>}
+      {currentPage < totalPages - 1 && <a href={`/page/${totalPages}`}>{totalPages}</a>}
+    </span>
+
+    {nextPage ? (
+      <a href={nextPage} class="next">Next &rarr;</a>
+    ) : (
+      <span class="next"></span>
+    )}
+  </nav>
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-title {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .cat {
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .updated {
+    font-size: 0.85em;
+    color: var(--muted);
+  }
+</style>

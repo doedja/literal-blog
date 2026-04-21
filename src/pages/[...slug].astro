@@ -1,0 +1,28 @@
+---
+import Post from '../layouts/Post.astro';
+import { getSortedPosts, getCategory, readingTime, getExcerpt } from '../utils';
+
+export async function getStaticPaths() {
+  const posts = await getSortedPosts();
+  return posts.map((post, index) => {
+    return {
+      params: { slug: post.slug },
+      props: {
+        post,
+        category: getCategory(post.slug),
+        prevPost: posts[index + 1] || null,
+        nextPost: posts[index - 1] || null,
+      },
+    };
+  });
+}
+
+const { post, category, prevPost, nextPost } = Astro.props;
+const { Content } = await post.render();
+const time = readingTime(post.body || '');
+const description = post.data.description || getExcerpt(post.body || '');
+---
+
+<Post post={post} category={category} readingTime={time} description={description} prevPost={prevPost} nextPost={nextPost}>
+  <Content />
+</Post>

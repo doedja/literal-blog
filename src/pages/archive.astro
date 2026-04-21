@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import { formatDate, getSlug, getCategory, getSortedPosts } from '../utils';
+
+const posts = await getSortedPosts();
+
+// Group posts by category
+const grouped = new Map<string, typeof posts>();
+for (const post of posts) {
+  const category = getCategory(post.slug);
+  if (!grouped.has(category)) {
+    grouped.set(category, []);
+  }
+  grouped.get(category)!.push(post);
+}
+
+// Sort categories and posts within each category
+const categories = [...grouped.entries()]
+  .sort((a, b) => a[0].localeCompare(b[0]))
+  .map(([category, posts]) => ({
+    category,
+    posts: posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+  }));
+---
+
+<Base title="Archive">
+  <h1>Archive</h1>
+  {categories.map(({ category, posts }) => (
+    <section>
+      <h2>{category.charAt(0).toUpperCase() + category.slice(1)} <span class="count">({posts.length})</span></h2>
+      <ul>
+        {posts.map((post) => (
+          <li>
+            <a href={`/${getSlug(post.slug)}`}>{post.data.title}</a>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 2rem;
+  }
+
+  section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-child {
+    border-bottom: none;
+  }
+
+  .count {
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h2 a {
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  h2 a:hover {
+    text-decoration: underline;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.25rem 0;
+  }
+
+  li a {
+    flex: 1;
+  }
+
+  time {
+    color: var(--muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    li {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+</style>

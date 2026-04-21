@@ -1,0 +1,33 @@
+---
+import Head from '../components/Head.astro';
+import { siteConfig } from '../../site.config';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <Head title={title} description={description} />
+  <body>
+    <header>
+      <a href="/" class="site-title">{siteConfig.title}</a>
+      <nav>
+        <a href="/archive">Archive</a>
+        <a href="/projects">Projects</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <span>&copy; {new Date().getFullYear()} {siteConfig.footer} · <a href="/rss.xml">RSS</a></span>
+    </footer>
+  </body>
+</html>
