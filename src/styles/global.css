@@ -27,6 +27,8 @@ html {
   color: var(--text);
   background: var(--bg);
   overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -108,6 +110,7 @@ h1, h2, h3 {
   line-height: 1.3;
   margin-top: 2em;
   margin-bottom: 0.5em;
+  text-wrap: balance;
 }
 
 h1 {
@@ -131,11 +134,14 @@ h3 { font-size: var(--text-lg); }
 /* Content */
 p {
   margin: 1.25em 0;
+  text-wrap: pretty;
 }
 
 img {
   max-width: 100%;
   height: auto;
+  outline: 1px solid rgba(0, 0, 0, 0.08);
+  outline-offset: -1px;
 }
 
 blockquote {
@@ -218,6 +224,7 @@ input[type="checkbox"] {
 /* Small caps for meta/dates */
 time {
   font-variant: small-caps;
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.03em;
 }
 
@@ -348,5 +355,9 @@ html {
     --muted: #918b84;
     --card-shadow: rgba(255,255,255,0.06);
     --card-shadow-hover: rgba(255,255,255,0.1);
+  }
+
+  img {
+    outline-color: rgba(255, 255, 255, 0.1);
   }
 }

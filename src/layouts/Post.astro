@@ -151,18 +151,25 @@ const { title, date, updated } = post.data;
     font-family: 'Libre Franklin', sans-serif;
     font-size: var(--text-xs);
     font-weight: 500;
-    padding: 0.4rem 0.9rem;
+    padding: 0.7rem 1rem;
+    min-height: 40px;
     border: 1px solid var(--border);
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
     color: var(--muted);
-    transition: all 0.15s ease;
+    transition-property: color, border-color, opacity, scale;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
   }
 
   .save-image-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
+  }
+
+  .save-image-btn:active {
+    scale: 0.96;
   }
 
   .save-image-btn.saving {
