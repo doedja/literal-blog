@@ -23,7 +23,7 @@
               '<pre style="padding:2rem;font-family:system-ui">Sveltia CMS script failed to load.</pre>';
             return;
           }
-          window.CMS.init({ load_config_file: false, config });
+          window.CMS.init({ config: { ...config, load_config_file: false } });
         })
         .catch((err) => {
           document.body.innerHTML =
